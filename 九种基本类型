@@ -1,0 +1,169 @@
+java提供了一组基本数据类型，包括
+```
+boolean, byte, char, short, 
+int, long, float, double, void. 
+```
+<p>字节：<br>boolean 布尔型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1/8 <br>byte 字节类型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1<br>char 字符型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; 一个字符能存储一个中文汉字<br>short 短整型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2<br>int 整数类型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4<br>float 浮点类型（单精度）&nbsp;&nbsp;&nbsp;&nbsp; 4<br>long 长整形&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8<br>double 双精度类型（双精度）&nbsp; 8</p>
+
+这些类型对应的封装类，分别为
+```
+Boolean, Byte, Character, Short,
+Integer, Long, Float, Double, Void
+```
+
+###二者存在的理由
+在java中使用基本类型来存储语言支持的基本数据类型，这里没有采用对象，而是使用了传统的面向过程语言所采用的基本类在型，主要是从**性能**方面来考虑的：因为即使最简单的数学计算，使用对象来处理也会引起一些开销，而这些开销对于数学计算本来是毫无必要的。
+但是在java中，**泛型类**包括预定义的集合，使用的参数都是对象类型，无法直接使用这些基本数据类型，所以java又提供了这些基本类型的包装器。
+
+###部分差别
+基本数据类型只能按值传递，而封装类按引用传递。
+基本类型在堆栈中创建；而对于对象类型，对象在堆中创建，对象的引用在堆栈中创建。
+
+
+```
+    /**
+     * Returns a <tt>Character</tt> instance representing the specified
+     * <tt>char</tt> value.
+     * If a new <tt>Character</tt> instance is not required, this method
+     * should generally be used in preference to the constructor
+     * {@link #Character(char)}, as this method is likely to yield
+     * significantly better space and time performance by caching
+     * frequently requested values.
+     *
+     * @param  c a char value.
+     * @return a <tt>Character</tt> instance representing <tt>c</tt>.
+     * @since  1.5
+     */
+    public static Character valueOf(char c) {
+	if(c <= 127) { // must cache
+	    return CharacterCache.cache[(int)c];
+	}
+        return new Character(c);
+    }
+
+    /**
+     * Returns the value of this <code>Character</code> object.
+     * @return  the primitive <code>char</code> value represented by
+     *          this object.
+     */
+    public char charValue() {
+        return value;
+    }
+```
+###封装类中封装了，可能常用的方法。且有用的方法整理：
+
+#character
+| 函数名   |功能    |
+| --- | --- |
+|   public static int digit(char ch, int radix)  |  Returns the numeric value of the character <code>ch</code> in the specified radix. ch转成各种进制表达的数字，超过范围则返回-1.  |
+|public static int getNumericValue(char ch)|the numeric value of the character, as a nonnegative <code>int</code> value; <br>-2 if the character has a numeric value that is not a nonnegative integer; <br>-1 if the character has no numeric value.|
+|public static boolean isDigit(char ch)||
+|public static boolean isLetter(char ch)||
+|public static boolean isLetterOrDigit(char ch)||
+|public static boolean isUpperCase(char ch)||
+|public static boolean isLowerCase(char ch)||
+
+```
+public class Main{
+    public static void main(String[] args) {
+        System.out.println(Character.isLetter(' '));
+        System.out.println(Character.isLetter('a'));
+        System.out.println(Character.isLetter('='));
+
+        System.out.println( Character.digit('f', 16));
+        System.out.println( Character.digit('f', 15));
+        System.out.println(Character.getNumericValue('a'));
+        System.out.println(Character.getNumericValue('z'));
+    }
+}
+输出：
+false
+true
+false
+15
+-1
+10
+35
+```
+
+#Integer
+
+| 函数名   |描述    |
+| --- | --- |
+|   public static String toString(int i, int radix)  |   * Returns a string representation of the first argument in the  radix specified by the second argument. <br>如果radix 在[2,35]中才有效，不然就默认成10进制|
+|public static String toOctalString(int i)|转8进制|
+|public static String toHexString(int i)|转16进制|
+|public static String toBinaryString(int i) |转2进制|
+|public static int numberOfLeadingZeros(int i)|Returns the number of zero bits preceding the highest-order ("leftmost") one-bit in the two's complement binary representation of the specified <tt>int</tt> value.  Returns 32 if the specified value has no one-bits in its two's complement representation, in other words if it is equal to zero.|
+|public static int numberOfTrailingZeros(int i)|Returns the number of zero bits following the lowest-order ("rightmost") one-bit in the two's complement binary representation of the specified <tt>int</tt> value.  Returns 32 if the specified value has no one-bits in its two's complement representation, in other words if it is equal to zero.|
+|public static int highestOneBit(int i)|@return an <tt>int</tt> value with a single one-bit, in the position of the highest-order one-bit in the specified value, or zero if the specified value is itself equal to zero.|
+|public static int lowestOneBit(int i) |@return an <tt>int</tt> value with a single one-bit, in the position of the lowest-order one-bit in the specified value, or zero if the specified value is itself equal to zero.|
+|public static int bitCount(int i)|@return the number of one-bits in the two's complement binary representation of the specified <tt>int</tt> value.|
+|public static int reverse(int i)|Returns the value obtained by reversing the order of the bits in the two's complement binary representation of the specified <tt>int</tt>value|
+|public static int parseInt(String s) throws NumberFormatException|Parses the string argument as a signed decimal integer.@exception  NumberFormatException  if the string does not contain a parsable integer.|
+|public static int parseInt(String s, int radix)throws NumberFormatException|Parses the string argument as a signed integer in the radix specified by the second argument<br>*Examples:<br>* <blockquote><pre><br>* parseInt("0", 10) returns 0<br>* parseInt("473", 10) returns 473<br>* parseInt("-0", 10) returns 0<br>* parseInt("-FF", 16) returns -255<br>* parseInt("1100110", 2) returns 102<br>* parseInt("2147483647", 10) returns 2147483647<br>* parseInt("-2147483648", 10) returns -2147483648<br>* parseInt("2147483648", 10) throws a NumberFormatException<br>* parseInt("99", 8) throws a NumberFormatException<br>* parseInt("Kona", 10) throws a NumberFormatException<br>* parseInt("Kona", 27) returns 411787<br>* </pre></blockquote>|
+
+```
+public class Main{
+        public static void main(String[] args){
+            System.out.println(Integer.toString(8, 2));
+            System.out.println(Integer.toString(8,16));
+
+            System.out.println("numberOfLeadingZeros");
+            System.out.println(Integer.numberOfLeadingZeros(8));
+            System.out.println(Integer.numberOfLeadingZeros(0));
+            System.out.println(Integer.numberOfLeadingZeros(-1));
+            System.out.println(Integer.numberOfLeadingZeros(-2123));
+
+            System.out.println("highestOneBit");
+
+            System.out.println(Integer.highestOneBit(16));
+            System.out.println(Integer.highestOneBit(15));
+            System.out.println(Integer.highestOneBit(8));
+            System.out.println(Integer.highestOneBit(7));
+            System.out.println(Integer.highestOneBit(0));
+            System.out.println(Integer.highestOneBit(-1));
+            System.out.println(Integer.highestOneBit(-2123));
+
+            System.out.println("bitCount");
+            System.out.println(Integer.bitCount(16));
+            System.out.println(Integer.bitCount(3));
+            System.out.println(Integer.bitCount(-3));
+
+            System.out.println("reverse");
+            System.out.println(Integer.reverse(128));
+            System.out.println(Integer.reverse(16777216));
+            System.out.println(256*256);
+        }
+}
+输出：
+1000
+8
+numberOfLeadingZeros
+28
+32
+0
+0
+highestOneBit
+16
+8
+8
+4
+0
+-2147483648
+-2147483648
+bitCount
+1
+2
+31
+reverse
+16777216
+128
+65536
+
+        
+```
+
+
+
+
